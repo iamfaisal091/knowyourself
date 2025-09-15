@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login + Profile + JSON Fetch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
     body {
@@ -20,12 +21,9 @@
       align-items:center;
     }
     header h1 { font-size:20px; }
-    .content {
-      flex:1;
-      background:#fff;
-      padding:20px;
-    }
     footer { text-align:center; }
+    .content { flex:1; background:#fff; padding:20px; }
+
     /* Login box */
     .loginBox {
       background:#fff;
@@ -55,6 +53,7 @@
       transition:0.3s;
     }
     .loginBox button:hover { background:#1255a2; }
+
     /* Clean Login Btn */
     #loginBtn {
       background:#fff;
@@ -67,6 +66,7 @@
       transition:0.3s;
     }
     #loginBtn:hover { background:#e3f2fd; }
+
     /* Profile small icon */
     .profile-pic {
       width:38px;
@@ -76,6 +76,7 @@
       object-fit:cover;
       display:none;
     }
+
     /* Profile dropdown */
     .profile-card {
       position:absolute;
@@ -110,20 +111,39 @@
       width:100%;
     }
     .show { display:block !important; }
+
     /* Data cards */
+    .cards-container {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap:16px;
+    }
     .card {
       background:#fafafa;
       border:1px solid #ddd;
       border-radius:8px;
       padding:15px;
-      margin:10px 0;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
     }
-    .card a {
-      color:#1976d2;
-      font-weight:bold;
+    .explanation {
+      margin-bottom:12px;
+      font-size:14px;
+      line-height:1.4;
+    }
+    .btn-link {
+      background:#1976d2;
+      color:#fff;
+      padding:10px;
+      text-align:center;
+      border-radius:6px;
       text-decoration:none;
+      font-weight:bold;
+      transition:0.3s;
     }
-    .card a:hover { text-decoration:underline; }
+    .btn-link:hover { background:#1255a2; }
+
     /* Responsive */
     @media(max-width:600px) {
       header, footer { flex-direction:column; text-align:center; }
@@ -171,7 +191,7 @@
 
   <script>
     const USERPASS = "vidyasagar";
-    const EXPIRY_DAYS = 3; // 3 days auto logout
+    const EXPIRY_DAYS = 3;
 
     const loginBtn = document.getElementById("loginBtn");
     const loginBox = document.getElementById("loginBox");
@@ -190,15 +210,12 @@
       let password = document.getElementById("password").value;
 
       if(password === USERPASS && username.trim() !== "") {
-        const loginData = {
-          username: username,
-          loginTime: new Date().getTime()
-        };
+        const loginData = { username: username, loginTime: new Date().getTime() };
         localStorage.setItem("userSession", JSON.stringify(loginData));
 
         showProfile(username);
         loginBox.style.display = "none";
-        fetchData(); // login के बाद JSON लोड होगा
+        fetchData();
         alert("Login successful!");
       } else {
         alert("Invalid credentials. Password is 'vidyasagar'");
@@ -224,19 +241,48 @@
         .then(res => res.json())
         .then(data => {
           dataContainer.innerHTML = "";
+          const container = document.createElement("div");
+          container.className = "cards-container";
+
           data.forEach(item => {
             let card = document.createElement("div");
             card.className = "card";
-            card.innerHTML = `<a href="${item.link}" target="_blank">${item.link}</a><p>${item.explanation}</p>`;
-            dataContainer.appendChild(card);
+
+            let explanation = document.createElement("p");
+            explanation.className = "explanation";
+            explanation.textContent = item.explanation;
+
+            let button = document.createElement("a");
+            button.className = "btn-link";
+            button.href = item.link;
+            button.target = "_blank";
+            button.textContent = getShortName(item.link);
+
+            card.appendChild(explanation);
+            card.appendChild(button);
+            container.appendChild(card);
           });
+
+          dataContainer.appendChild(container);
         })
         .catch(err => {
           dataContainer.innerHTML = "<p style='color:red;'>Error loading JSON data.</p>";
         });
     }
 
-    // Restore session on load
+    // Short name from link
+    function getShortName(link) {
+      if (link.includes("class-6")) return "Class 6";
+      if (link.includes("class-7")) return "Class 7";
+      if (link.includes("class-8")) return "Class 8";
+      if (link.includes("class-9")) return "Class 9";
+      if (link.includes("class-10")) return "Class 10";
+      if (link.includes("class-11")) return "Class 11";
+      if (link.includes("class-12")) return "Class 12";
+      return "Open Book";
+    }
+
+    // Restore session
     window.onload = function() {
       const session = JSON.parse(localStorage.getItem("userSession"));
       if(session) {
@@ -244,9 +290,9 @@
         const expiry = EXPIRY_DAYS * 24 * 60 * 60 * 1000;
         if(now - session.loginTime < expiry) {
           showProfile(session.username);
-          fetchData(); // already logged in → show data
+          fetchData();
         } else {
-          logout(); // session expired
+          logout();
         }
       }
     };
@@ -256,7 +302,6 @@
       profileCard.classList.toggle("show");
     });
 
-    // Close dropdown if clicked outside
     document.addEventListener("click", (e) => {
       if (!profileCard.contains(e.target) && e.target !== profilePic) {
         profileCard.classList.remove("show");
@@ -264,4 +309,4 @@
     });
   </script>
 </body>
-</html>
+      </html>
