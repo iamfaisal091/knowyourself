@@ -17,8 +17,16 @@
       font-weight: bold;
     }
     h2 { margin: 1.5rem 1rem 1rem; font-size: 1.3rem; }
-    .slider-container { overflow: hidden; margin: 0 1rem 2rem; border-radius: 1rem; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);}
-    .slider-track { display: flex; gap: 1rem; padding: 1rem; overflow: hidden; }
+    .slider-container {
+      overflow: hidden; margin: 0 1rem 2rem;
+      border-radius: 1rem; background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .slider-track {
+      display: flex; gap: 1rem; padding: 1rem;
+      overflow: hidden; scroll-behavior: smooth;
+    }
     .card {
       min-width: 180px; border-radius: 0.8rem; background: #f9fafb;
       box-shadow: 0 4px 10px rgba(0,0,0,0.08); flex-shrink: 0;
@@ -77,6 +85,66 @@
     const modalSource = document.getElementById("modal-source");
     const closeBtn = document.getElementById("close");
 
+    let activeSlider = null; // जिस slider पर modal खुला है वो pause रहेगा
+
+    // Auto scroll function
+    function startAutoScroll(track) {
+      let scrollSpeed = 1; // हर frame कितना move होगा
+      let animationFrame;
+
+      function step() {
+        if (track !== activeSlider) {
+          track.scrollLeft += scrollSpeed;
+          // infinite loop effect
+          if (track.scrollLeft >= track.scrollWidth - track.clientWidth) {
+            track.scrollLeft = 0;
+          }
+        }
+        animationFrame = requestAnimationFrame(step);
+      }
+      step();
+
+      // Manual drag control
+      let isDown = false;
+      let startX, scrollLeft;
+      track.addEventListener("mousedown", e => {
+        isDown = true;
+        startX = e.pageX - track.offsetLeft;
+        scrollLeft = track.scrollLeft;
+        cancelAnimationFrame(animationFrame);
+      });
+      track.addEventListener("mouseleave", () => { isDown = false; });
+      track.addEventListener("mouseup", () => {
+        isDown = false;
+        if (track !== activeSlider) step();
+      });
+      track.addEventListener("mousemove", e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - track.offsetLeft;
+        const walk = (x - startX);
+        track.scrollLeft = scrollLeft - walk;
+      });
+
+      // touch events
+      track.addEventListener("touchstart", e => {
+        isDown = true;
+        startX = e.touches[0].pageX;
+        scrollLeft = track.scrollLeft;
+        cancelAnimationFrame(animationFrame);
+      });
+      track.addEventListener("touchend", () => {
+        isDown = false;
+        if (track !== activeSlider) step();
+      });
+      track.addEventListener("touchmove", e => {
+        if (!isDown) return;
+        const x = e.touches[0].pageX;
+        const walk = (x - startX);
+        track.scrollLeft = scrollLeft - walk;
+      });
+    }
+
     // Load JSON
     fetch("data.json")
       .then(res => res.json())
@@ -94,13 +162,18 @@
               modalExplanation.textContent = criminal.explanation;
               modalSource.href = criminal.source;
               modal.style.display = "flex";
+              activeSlider = track; // सिर्फ इसी slider का scroll रुकेगा
             });
             track.appendChild(card);
           });
+          startAutoScroll(track);
         });
       });
 
-    closeBtn.addEventListener("click", () => modal.style.display = "none");
+    closeBtn.addEventListener("click", () => {
+      modal.style.display = "none";
+      activeSlider = null; // फिर से सभी sliders auto चलेंगे
+    });
   </script>
 </body>
-</html>
+  </html>
