@@ -1,0 +1,44 @@
+{
+  "drugs": [
+    {
+      "name": "Ravi Kumar",
+      "status": "Wanted",
+      "explanation": "Famous smuggler involved in cross-border narcotics trade.",
+      "source": "https://example.com/ravi-kumar"
+    },
+    {
+      "name": "Imran Ali",
+      "status": "Convicted",
+      "explanation": "Caught in possession of high-value narcotics shipments.",
+      "source": "https://example.com/imran-ali"
+    }
+  ],
+  "rapists": [
+    {
+      "name": "Ajay Singh",
+      "status": "Convicted",
+      "explanation": "Convicted in 2018 for multiple assault cases.",
+      "source": "https://example.com/ajay-singh"
+    },
+    {
+      "name": "Mark Johnson",
+      "status": "Under Trial",
+      "explanation": "Currently under trial for multiple allegations.",
+      "source": "https://example.com/mark-johnson"
+    }
+  ],
+  "murderers": [
+    {
+      "name": "Sunil Sharma",
+      "status": "Convicted",
+      "explanation": "Found guilty of multiple homicide charges.",
+      "source": "https://example.com/sunil-sharma"
+    },
+    {
+      "name": "Vikram Rao",
+      "status": "Under Trial",
+      "explanation": "Facing trial for alleged contract killings.",
+      "source": "https://example.com/vikram-rao"
+    }
+  ]
+}
