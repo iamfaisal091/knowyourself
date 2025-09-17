@@ -11,10 +11,18 @@
       margin: 0; padding: 0; color: #1e293b;
     }
     header {
-      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      background: linear-gradient(135deg, #1e3a8a, #2563eb, #3b82f6);
       color: white; text-align: center;
-      padding: 1rem; font-size: 1.5rem;
-      font-weight: bold;
+      padding: 1rem; font-size: 1.8rem;
+      font-weight: bold; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+    header span {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 400;
+      margin-top: 0.3rem;
+      color: #e0e7ff;
     }
     h2 { margin: 1.5rem 1rem 1rem; font-size: 1.3rem; }
     .slider-container {
@@ -55,7 +63,10 @@
   </style>
 </head>
 <body>
-  <header>Criminals Showcase</header>
+  <header>
+    Criminals Showcase
+    <span>⛔ A record of Drugs, Rapists & Murderers ⛔</span>
+  </header>
 
   <h2>🚬 Drugs Mafia</h2>
   <div class="slider-container"><div class="slider-track" id="drugs"></div></div>
@@ -85,18 +96,18 @@
     const modalSource = document.getElementById("modal-source");
     const closeBtn = document.getElementById("close");
 
-    let activeSlider = null; // जिस slider पर modal खुला है वो pause रहेगा
+    let activeSlider = null;
 
-    // Auto scroll function
+    // Infinite Auto scroll function
     function startAutoScroll(track) {
-      let scrollSpeed = 1; // हर frame कितना move होगा
+      let scrollSpeed = 1; 
       let animationFrame;
 
       function step() {
         if (track !== activeSlider) {
           track.scrollLeft += scrollSpeed;
-          // infinite loop effect
-          if (track.scrollLeft >= track.scrollWidth - track.clientWidth) {
+          // जब आधे duplicate cards तक पहुँच जाए तो reset
+          if (track.scrollLeft >= track.scrollWidth / 2) {
             track.scrollLeft = 0;
           }
         }
@@ -125,24 +136,6 @@
         const walk = (x - startX);
         track.scrollLeft = scrollLeft - walk;
       });
-
-      // touch events
-      track.addEventListener("touchstart", e => {
-        isDown = true;
-        startX = e.touches[0].pageX;
-        scrollLeft = track.scrollLeft;
-        cancelAnimationFrame(animationFrame);
-      });
-      track.addEventListener("touchend", () => {
-        isDown = false;
-        if (track !== activeSlider) step();
-      });
-      track.addEventListener("touchmove", e => {
-        if (!isDown) return;
-        const x = e.touches[0].pageX;
-        const walk = (x - startX);
-        track.scrollLeft = scrollLeft - walk;
-      });
     }
 
     // Load JSON
@@ -151,29 +144,38 @@
       .then(data => {
         ["drugs","rapists","murderers"].forEach(type => {
           const track = document.getElementById(type);
-          data[type].forEach(criminal => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.innerHTML = `<h3>${criminal.name}</h3>
-                              <span class="status ${criminal.status.replace(" ","")}">${criminal.status}</span>`;
-            card.addEventListener("click", () => {
-              modalName.textContent = criminal.name;
-              modalStatus.textContent = "Status: " + criminal.status;
-              modalExplanation.textContent = criminal.explanation;
-              modalSource.href = criminal.source;
-              modal.style.display = "flex";
-              activeSlider = track; // सिर्फ इसी slider का scroll रुकेगा
+
+          // Create cards
+          function makeCards(criminals) {
+            criminals.forEach(criminal => {
+              const card = document.createElement("div");
+              card.className = "card";
+              card.innerHTML = `<h3>${criminal.name}</h3>
+                                <span class="status ${criminal.status.replace(" ","")}">${criminal.status}</span>`;
+              card.addEventListener("click", () => {
+                modalName.textContent = criminal.name;
+                modalStatus.textContent = "Status: " + criminal.status;
+                modalExplanation.textContent = criminal.explanation;
+                modalSource.href = criminal.source;
+                modal.style.display = "flex";
+                activeSlider = track;
+              });
+              track.appendChild(card);
             });
-            track.appendChild(card);
-          });
+          }
+
+          // append 2x for infinite scroll
+          makeCards(data[type]);
+          makeCards(data[type]);
+
           startAutoScroll(track);
         });
       });
 
     closeBtn.addEventListener("click", () => {
       modal.style.display = "none";
-      activeSlider = null; // फिर से सभी sliders auto चलेंगे
+      activeSlider = null;
     });
   </script>
 </body>
-  </html>
+</html>
