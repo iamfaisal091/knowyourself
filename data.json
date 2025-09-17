@@ -1,44 +1,59 @@
 {
-  "drugs": [
+  "categories": [
     {
-      "name": "Ravi Kumar",
-      "status": "Wanted",
-      "explanation": "Famous smuggler involved in cross-border narcotics trade.",
-      "source": "https://example.com/ravi-kumar"
+      "title": "Drug Mafia",
+      "criminals": [
+        {
+          "name": "Pablo Escobar",
+          "status": "Wanted",
+          "charges": "Drug Trafficking",
+          "details": "Founder of Medellín Cartel, smuggled tons of cocaine.",
+          "address": "Medellín, Colombia",
+          "image": "https://i.ibb.co/5Tg2zRq/escobar.jpg"
+        },
+        {
+          "name": "El Chapo",
+          "status": "Convicted",
+          "charges": "Cartel Leader",
+          "details": "Head of Sinaloa Cartel, known for prison escapes.",
+          "address": "Mexico City, Mexico",
+          "image": "https://i.ibb.co/ZHnVpbV/elchapo.jpg"
+        }
+      ]
     },
     {
-      "name": "Imran Ali",
-      "status": "Convicted",
-      "explanation": "Caught in possession of high-value narcotics shipments.",
-      "source": "https://example.com/imran-ali"
-    }
-  ],
-  "rapists": [
-    {
-      "name": "Ajay Singh",
-      "status": "Convicted",
-      "explanation": "Convicted in 2018 for multiple assault cases.",
-      "source": "https://example.com/ajay-singh"
+      "title": "Murderers",
+      "criminals": [
+        {
+          "name": "Ted Bundy",
+          "status": "Executed",
+          "charges": "Serial Killer",
+          "details": "American serial killer active during the 1970s.",
+          "address": "Washington, USA",
+          "image": "https://i.ibb.co/p3gbmKr/tedbundy.jpg"
+        },
+        {
+          "name": "Jack The Ripper",
+          "status": "Unknown",
+          "charges": "Serial Killer",
+          "details": "Infamous unidentified killer from 1888 London.",
+          "address": "Whitechapel, London",
+          "image": "https://i.ibb.co/jvgb3fS/ripper.jpg"
+        }
+      ]
     },
     {
-      "name": "Mark Johnson",
-      "status": "Under Trial",
-      "explanation": "Currently under trial for multiple allegations.",
-      "source": "https://example.com/mark-johnson"
-    }
-  ],
-  "murderers": [
-    {
-      "name": "Sunil Sharma",
-      "status": "Convicted",
-      "explanation": "Found guilty of multiple homicide charges.",
-      "source": "https://example.com/sunil-sharma"
-    },
-    {
-      "name": "Vikram Rao",
-      "status": "Under Trial",
-      "explanation": "Facing trial for alleged contract killings.",
-      "source": "https://example.com/vikram-rao"
+      "title": "Rapists",
+      "criminals": [
+        {
+          "name": "Nirbhaya Case Convict",
+          "status": "Executed",
+          "charges": "Gang Rape",
+          "details": "Convicted in the 2012 Delhi gang rape case.",
+          "address": "New Delhi, India",
+          "image": "https://i.ibb.co/Nrr8wN0/rapist.jpg"
+        }
+      ]
     }
   ]
-}
+    }
